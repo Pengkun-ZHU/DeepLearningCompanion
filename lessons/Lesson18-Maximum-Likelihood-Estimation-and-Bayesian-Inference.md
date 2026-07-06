@@ -1,4 +1,4 @@
-# Lesson 22 — Maximum Likelihood Estimation and Bayesian Inference
+# Lesson 18 — Maximum Likelihood Estimation and Bayesian Inference
 
 | | |
 |---|---|
@@ -309,7 +309,7 @@ These are not coincidences — they are the same optimization problem expressed 
 
 ## Next Lesson
 
-**Lesson 23 — Stochastic Gradient Descent in PyTorch**
+**Lesson 19 — Stochastic Gradient Descent in PyTorch**
 
 Chapter 5 concludes with a discussion of stochastic gradient descent.
 

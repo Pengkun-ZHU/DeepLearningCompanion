@@ -1,4 +1,4 @@
-# Lesson 13 — Random Variables and Probability Fundamentals
+# Lesson 09 — Random Variables and Probability Fundamentals
 
 | | |
 |---|---|
@@ -301,7 +301,7 @@ The key engineering insight is that computations are performed in log space to p
 
 ## Next Lesson
 
-**Lesson 14 — Common Probability Distributions in PyTorch**
+**Lesson 10 — Common Probability Distributions in PyTorch**
 
 The *Deep Learning* book surveys the distributions most commonly used in machine learning.
 

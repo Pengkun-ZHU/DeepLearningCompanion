@@ -1,4 +1,4 @@
-# Lesson 23 — Stochastic Gradient Descent in PyTorch
+# Lesson 19 — Stochastic Gradient Descent in PyTorch
 
 | | |
 |---|---|
@@ -364,7 +364,7 @@ You are now fully prepared to study Chapter 6 — Deep Feedforward Networks.
 
 ## Next Lesson
 
-**Lesson 24 — Deep Feedforward Networks**
+**Lesson 20 — Deep Feedforward Networks**
 
 Chapter 6 of the *Deep Learning* book introduces the first deep architecture.
 

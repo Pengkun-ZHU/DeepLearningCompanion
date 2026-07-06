@@ -1,4 +1,4 @@
-# Lesson 14 — Common Probability Distributions in PyTorch
+# Lesson 10 — Common Probability Distributions in PyTorch
 
 | | |
 |---|---|
@@ -285,7 +285,7 @@ The central insight is that choosing a loss function and choosing an output dist
 
 ## Next Lesson
 
-**Lesson 15 — Information Theory: Entropy, Cross-Entropy, and KL Divergence**
+**Lesson 11 — Information Theory: Entropy, Cross-Entropy, and KL Divergence**
 
 Chapter 3 concludes with information theory.
 

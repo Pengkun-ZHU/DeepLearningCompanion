@@ -1,4 +1,4 @@
-# Lesson 17 — Gradient-Based Optimization Foundations
+# Lesson 13 — Gradient-Based Optimization Foundations
 
 | | |
 |---|---|
@@ -324,7 +324,7 @@ The challenges in practice are not the algorithm but the properties of the loss 
 
 ## Next Lesson
 
-**Lesson 18 — Computational Graphs and Autograd**
+**Lesson 14 — Computational Graphs and Autograd**
 
 The previous lessons assumed that gradients were available.
 

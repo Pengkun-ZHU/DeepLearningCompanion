@@ -1,4 +1,4 @@
-# Lesson 20 — Capacity, Overfitting, and Underfitting
+# Lesson 16 — Capacity, Overfitting, and Underfitting
 
 | | |
 |---|---|
@@ -261,7 +261,7 @@ Train error and test error tell different stories — both must be monitored.
 
 ## Next Lesson
 
-**Lesson 21 — Regularization in PyTorch**
+**Lesson 17 — Regularization in PyTorch**
 
 Chapter 5 describes regularization techniques that reduce overfitting without reducing model capacity.
 

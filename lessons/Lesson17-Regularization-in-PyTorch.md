@@ -1,4 +1,4 @@
-# Lesson 21 — Regularization in PyTorch
+# Lesson 17 — Regularization in PyTorch
 
 | | |
 |---|---|
@@ -350,7 +350,7 @@ The three approaches operate at different levels: parameter values, activations,
 
 ## Next Lesson
 
-**Lesson 22 — Maximum Likelihood Estimation and Bayesian Inference**
+**Lesson 18 — Maximum Likelihood Estimation and Bayesian Inference**
 
 Chapter 5 provides a rigorous probabilistic foundation for learning.
 
