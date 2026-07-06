@@ -20,7 +20,7 @@ By the end of this lesson you should be able to:
 
 ## Motivation
 
-In Python, indexing feels trivial.
+In terms of syntax, indexing feels trivial.
 
 ```python
 x[2, 1]
