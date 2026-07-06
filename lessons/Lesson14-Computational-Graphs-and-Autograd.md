@@ -1,4 +1,4 @@
-# Lesson 18 — Computational Graphs and Autograd
+# Lesson 14 — Computational Graphs and Autograd
 
 | | |
 |---|---|
@@ -313,7 +313,7 @@ Understanding autograd is prerequisite to implementing custom operations, debugg
 
 ## Next Lesson
 
-**Lesson 19 — Learning Algorithms and the ML Pipeline**
+**Lesson 15 — Learning Algorithms and the ML Pipeline**
 
 Chapter 5 of the *Deep Learning* book introduces machine learning from a rigorous perspective.
 

@@ -1,4 +1,4 @@
-# Lesson 12 — Norms, Special Matrices, and Decompositions
+# Lesson 08 — Norms, Special Matrices, and Decompositions
 
 | | |
 |---|---|
@@ -333,7 +333,7 @@ The key engineering insight is that operations which require genuine computation
 
 ## Next Lesson
 
-**Lesson 13 — Random Variables and Probability Fundamentals**
+**Lesson 09 — Random Variables and Probability Fundamentals**
 
 Chapter 3 of the *Deep Learning* book introduces probability theory.
 

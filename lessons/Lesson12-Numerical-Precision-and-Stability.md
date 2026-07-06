@@ -1,4 +1,4 @@
-# Lesson 16 — Numerical Precision and Stability
+# Lesson 12 — Numerical Precision and Stability
 
 | | |
 |---|---|
@@ -275,7 +275,7 @@ Key principles:
 
 ## Next Lesson
 
-**Lesson 17 — Gradient-Based Optimization Foundations**
+**Lesson 13 — Gradient-Based Optimization Foundations**
 
 Chapter 4 continues with optimization.
 

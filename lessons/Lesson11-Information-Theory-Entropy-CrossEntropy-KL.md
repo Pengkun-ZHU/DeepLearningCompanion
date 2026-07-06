@@ -1,4 +1,4 @@
-# Lesson 15 — Information Theory: Entropy, Cross-Entropy, and KL Divergence
+# Lesson 11 — Information Theory: Entropy, Cross-Entropy, and KL Divergence
 
 | | |
 |---|---|
@@ -288,7 +288,7 @@ This chain of equivalences is why cross-entropy is not merely a convenient heuri
 
 ## Next Lesson
 
-**Lesson 16 — Numerical Precision and Stability**
+**Lesson 12 — Numerical Precision and Stability**
 
 Chapter 4 of the *Deep Learning* book addresses numerical computation.
 

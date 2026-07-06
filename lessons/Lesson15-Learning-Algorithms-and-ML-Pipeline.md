@@ -1,4 +1,4 @@
-# Lesson 19 — Learning Algorithms and the ML Pipeline
+# Lesson 15 — Learning Algorithms and the ML Pipeline
 
 | | |
 |---|---|
@@ -272,7 +272,7 @@ It is not complex, but it must be implemented carefully: zero gradients, compute
 
 ## Next Lesson
 
-**Lesson 20 — Capacity, Overfitting, and Underfitting**
+**Lesson 16 — Capacity, Overfitting, and Underfitting**
 
 Chapter 5 continues by analyzing why models succeed or fail to generalize.
 
