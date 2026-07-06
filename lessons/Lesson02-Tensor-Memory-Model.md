@@ -140,12 +140,10 @@ Transpose is therefore essentially:
 ```
 old shape
 ↓
-
 new shape
 
 old stride
 ↓
-
 new stride
 ```
 
