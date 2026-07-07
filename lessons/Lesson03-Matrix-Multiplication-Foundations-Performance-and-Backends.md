@@ -311,48 +311,6 @@ Replacing Python loops with C++ loops helps, but it does **not** explain differe
 Something much more important is happening.
 
 
-## The Memory Problem
-
-Consider this loop.
-
-```cpp
-for (int i = 0; i < M; ++i)
-    for (int j = 0; j < N; ++j)
-        for (int k = 0; k < K; ++k)
-            C[i][j] += A[i][k] * B[k][j];
-```
-
-Accesses to `A` look like
-
-```
-A[0][0]
-A[0][1]
-A[0][2]
-A[0][3]
-...
-```
-
-These values are adjacent in memory.
-
-The CPU likes this.
-
-Accesses to `B` look like
-
-```
-B[0][0]
-B[1][0]
-B[2][0]
-B[3][0]
-...
-```
-
-These values are **not** adjacent in row-major storage.
-
-Every iteration jumps to a different location in memory.
-
-This is much less efficient.
-
-
 ## CPU Cache
 
 Modern CPUs are much faster than main memory.
@@ -384,31 +342,33 @@ Reading data already in cache is dramatically faster than fetching it from RAM.
 Efficient matrix multiplication is largely about **keeping useful data in the cache**.
 
 
-## Why Loop Order Matters
+## Why Loop Order Matters? The Memory Problem
 
 Consider these two loop orders.
 
 ```cpp
-i
-j
-k
+for (int i = 0; i < M; ++i)
+    for (int j = 0; j < N; ++j)
+        for (int k = 0; k < K; ++k)
+            C[i][j] += A[i][k] * B[k][j]; 
 ```
+
+`C[i][j]`: Spatial locality is perfect because it doesn't change based on k. It can stay in a CPU register.  
+`A[i][k]`: Sequential access (`A[i][0]`, `A[i][1]`, `A[i][2]`). This is very cache-friendly.  
+`B[k][j]`: Disaster. As `k` increments, you are accessing `B[0][j]`, `B[1][j]`, `B[2][j]`. You are jumping a distance of N elements in memory on every single iteration. This causes constant cache misses because the CPU is pulling down whole cache lines but only using one element from each before throwing it away.
 
 versus
 
 ```cpp
-i
-k
-j
+for (int i = 0; i < M; ++i)
+    for (int k = 0; k < K; ++k)
+        for (int j = 0; j < N; ++j)
+            C[i][j] += A[i][k] * B[k][j]; 
 ```
 
-Both produce exactly the same mathematical result.
-
-However, they access memory differently.
-
-One may repeatedly reuse cached values.
-
-The other may constantly reload data from memory.
+`A[i][k]`: Independent of j. It stays completely constant for the entire duration of the inner loop and can be cached in a single register.  
+`B[k][j]`: Sequential access (`B[k][0]`, `B[k][1]`, `B[k][2]`). Perfect spatial locality, The CPU loads a cache line once and instantly processes the next 8–16 elements directly from the cache.  
+`C[i][j]`: Sequential access (`C[i][0]`, `C[i][1]`, `C[i][2]`). Also perfect spatial locality!
 
 On large matrices, this difference can dramatically affect performance.
 
