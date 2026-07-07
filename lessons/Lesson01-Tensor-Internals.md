@@ -1,9 +1,8 @@
 # Lesson 01 — Tensor Internals: Storage, Strides, Views, and Contiguous Memory
 
-| | |
-|---|---|
-| **Chapter** | 2 — Linear Algebra |
-| **Reading Assignment** | Sections 2.1–2.4 (Scalars, Vectors, Matrices, Tensors) |
+|Book|Chapter|Section|
+|---|---|---|
+| Deep Learning | 2 — Linear Algebra |Sections 2.1–2.4 (Scalars, Vectors, Matrices, Tensors)|
 
 This lesson assumes you have already completed the assigned reading from **Deep Learning**.
 
