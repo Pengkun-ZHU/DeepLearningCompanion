@@ -549,35 +549,37 @@ As models become larger, this operation quickly becomes the dominant computation
 
 PyTorch provides several interfaces.
 
+Strict 2D Matrix Multiplication:
 ```python
 torch.mm(A, B)
 ```
 
-Matrix × Matrix
+Broadcastable & Multi-Dimensional Multiplication:
 
 
 ```python
 torch.matmul(A, B)
 ```
 
-General matrix multiplication.
-
-Works with vectors, matrices and batches.
-
+The Idiomatic Operator that PyTorch overrides to call `torch.matmul(A, B)` under the hood:
 
 ```python
 A @ B
 ```
 
-Python syntax for `torch.matmul()`.
+## Fun fact
 
-For most user code,
+In Numpy, there too exist two kinds of matrix multiplication methods, `dot`, and `matmul`(`@`), respectively. 
 
-```python
-@
-```
+While they behave identically when applied to strict 2D matrices, stepping into higher dimensions exposes a fascinating split between two opposing design philosophies:
 
-is the preferred notation.
+`np.dot` is a pure mathematical paradigm, it views tensors from a classical, generalized linear algebra perspective. It applies a uniform contraction formula over the last dimension of the first array and the second-to-last dimension of the second array:
+
+dot(a, b)[i, j, ..., m,  n, p, ..., o] = sum( a[i, j, ..., m, :] * b[n, p, ..., :, o] )
+
+Conversely, `np.matmul` views any dimensions higher than 2D strictly as batch dimensions. The actual matrix multiplication is isolated entirely to the last two dimensions, while the leading dimensions are simply broadcasted across the parallel batches, in the end, it operates on row-column picture of 2D matrix multiplication. 
+
+Modern ML workflow depends mainly, if not wholly, on the row-column picture, as a framework built specifically for ML, Pytorch's matrix multiplication implement the `np.matmul` way, and it is very crucial to understand the batching and row-column picture of 2D matrix multiplication.
 
 
 ## Source Reading
