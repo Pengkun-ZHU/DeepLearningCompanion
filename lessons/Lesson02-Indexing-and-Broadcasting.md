@@ -405,18 +405,6 @@ x = x.t()
 Notice that only the stride changes. The indexing algorithm remains identical.
 
 
-### 3
-
-Write a Python function
-
-```python
-def offset(indices, stride, storage_offset):
-    ...
-```
-
-that computes the storage offset exactly as PyTorch does. Test it on several tensors.
-
-
 ### 4
 
 Predict whether each pair of shapes can be broadcast.
@@ -431,12 +419,8 @@ Predict whether each pair of shapes can be broadcast.
 Explain your reasoning.
 
 
+
 ### 5
-
-Create a tensor with `expand()`. Inspect `shape`, `stride`, `storage_offset`, and `is_contiguous()`. How do they differ from the original tensor?
-
-
-### 6
 
 Can an expanded tensor be modified in place?
 
@@ -447,7 +431,7 @@ e.add_(1)
 What happens? Why?
 
 
-### 7
+### 6
 
 Without referring to the documentation, explain broadcasting using only the concepts introduced in Lessons 1–2. Do **not** use the word "copy."
 
