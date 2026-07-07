@@ -1,4 +1,4 @@
-# Lesson 06 — Matrix Multiplication: Foundations, Performance, and Backends
+# Lesson 03 — Matrix Multiplication: Foundations, Performance, and Backends
 
 | | |
 |---|---|
