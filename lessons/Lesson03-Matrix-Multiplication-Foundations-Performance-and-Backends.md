@@ -750,7 +750,7 @@ PyTorch exposes a single unified `@` operator that automatically selects the rig
 
 ## Next Lesson
 
-**Lesson 03 — CUDA GEMM: From Naïve to Tiled**
+**Lesson 04 — CUDA GEMM: From Naïve to Tiled**
 
 We'll look beneath cuBLAS and study how GPU hardware executes matrix multiplication.
 
