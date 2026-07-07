@@ -631,10 +631,6 @@ Follow the call chain.
 
 Notice that PyTorch quickly dispatches to optimized backend libraries rather than performing nested loops directly.
 
-This is intentional.
-
-Writing a competitive matrix multiplication kernel is an enormous engineering challenge that has been refined over decades.
-
 
 ## Framework Design
 
@@ -775,7 +771,7 @@ PyTorch exposes a single unified `@` operator that automatically selects the rig
 
 ## Next Lesson
 
-**Lesson 07 — CUDA GEMM: From Naïve to Tiled**
+**Lesson 03 — CUDA GEMM: From Naïve to Tiled**
 
 We'll look beneath cuBLAS and study how GPU hardware executes matrix multiplication.
 
