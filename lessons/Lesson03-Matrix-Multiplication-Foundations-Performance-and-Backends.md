@@ -609,6 +609,8 @@ print(np.dot(a, b)[0, 0])     # [[10, 13], [28, 31]]
 print(np.matmul(a, b)[0])     # [[10, 13], [28, 40]]
 ```
 
+Notice that the last two lines do not select the same kind of object: `np.dot(a, b)[0, 0]` compares one row against both leading slices of `b`, while `np.matmul(a, b)[0]` is the full matrix product for batch `0`.
+
 `np.dot()` preserves the leading dimensions from both operands, while `np.matmul()` interprets them as batch dimensions and multiplies corresponding matrices.
 
 ### Why PyTorch Chose `matmul()` Semantics
