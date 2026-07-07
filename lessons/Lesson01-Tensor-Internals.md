@@ -522,9 +522,6 @@ Find five tensor operations. Classify each as:
 Without referring to the documentation, explain the difference between `view`, `reshape`, `transpose`, and `contiguous` using only the concepts from this lesson.
 
 
-### 7
-
-In one paragraph, explain why PyTorch does not provide separate `Vector` and `Matrix` classes.
 
 
 ## Summary
