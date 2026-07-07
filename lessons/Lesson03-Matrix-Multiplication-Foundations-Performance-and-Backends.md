@@ -569,24 +569,51 @@ A @ B
 
 ## Fun Fact
 
-NumPy offers two matrix multiplication methods: `dot()` and `matmul()` (via `@`). 
+NumPy offers two matrix multiplication methods: `dot()` and `matmul()` (via `@`).
 
-For strict 2D matrices, they behave identically. However, higher-dimensional tensors expose fundamentally different design philosophies:
+For strict 2D matrices, they behave identically.
+
+Higher-dimensional tensors reveal very different design philosophies.
 
 ### `np.dot()` — Mathematical Generalization
+
 It views all tensor dimensions through a classical linear algebra lens. It applies a uniform contraction formula:
 
 ```text
 dot(a, b)[i, j, ..., m, n, p, ..., o] = sum(a[i, j, ..., m, :] * b[n, p, ..., :, o])
 ```
 
+All leading dimensions participate symmetrically — there is no concept of a dedicated batch axis.
+
 ### `np.matmul()` — Batch-Matrix Perspective
+
 It separates batch dimensions from the actual computation. The last two dimensions perform strict matrix multiplication, while leading dimensions are treated as batch indices:
+
 ```text
-matmul(a, b)[batch_dims, :, :] = a[batch_dims, :, k] @ b[batch_dims, k, :]
+matmul(a, b)[..., i, j] = sum(a[..., i, k] * b[..., k, j])
 ```
 
-Modern machine learning frameworks depend almost exclusively on the batch-matrix view. PyTorch implements np.matmul() semantics because deep learning workflows inherently work with batched operations — computing many matrix multiplications in parallel across minibatches of data.
+The leading dimensions are broadcast as batch dimensions, while only the last two axes participate in the matrix product itself.
+
+Here is a concrete example where the two APIs diverge:
+
+```python
+import numpy as np
+
+a = np.arange(12).reshape(2, 2, 3)
+b = np.arange(12).reshape(2, 3, 2)
+
+print(np.dot(a, b).shape)     # (2, 2, 2, 2)
+print(np.matmul(a, b).shape)  # (2, 2, 2)
+print(np.dot(a, b)[0, 0])     # [[10, 13], [28, 31]]
+print(np.matmul(a, b)[0])     # [[10, 13], [28, 40]]
+```
+
+`np.dot()` preserves the leading dimensions from both operands, while `np.matmul()` interprets them as batch dimensions and multiplies corresponding matrices.
+
+### Why PyTorch Chose `matmul()` Semantics
+
+Modern machine learning frameworks depend almost exclusively on the batch-matrix view. PyTorch implements `np.matmul()` semantics because deep learning workflows inherently operate on minibatches — many matrix multiplications performed in parallel across leading dimensions.
 
 ## Source Reading
 
