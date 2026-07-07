@@ -22,6 +22,9 @@ By the end of this lesson you should be able to:
 - explain what BLAS and cuBLAS are;
 - understand why PyTorch delegates matrix multiplication to backend libraries.
 
+## Before We Start
+
+For readers whose linear algebra skills may have grown rusty, a review of Professor Gilbert Strang’s canonical Linear Algebra course at MIT is highly recommended. This resource offers more than a simple refresher; it deeply familiarizes the reader with the row and column perspectives of matrix multiplication—a foundational intuition that plays a vital role in mastering modern ML concepts.
 
 ## Motivation
 
