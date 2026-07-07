@@ -441,7 +441,7 @@ Without referring to the documentation, explain broadcasting using only the conc
 Tensor indexing converts logical indices into a memory address using a simple formula:
 
 ```
-offset = Σ index[d] × stride[d] + storage_offset
+offset = storage_offset + Σ(index[d] * stride[d]) for d = 0 to n-1
 ```
 
 Broadcasting achieves operations on differently-shaped tensors by setting certain strides to zero, creating the illusion of a larger tensor without allocating additional memory.
@@ -453,7 +453,7 @@ Shape, stride, and storage offset together form the complete description of how 
 
 ## Next Lesson
 
-**Lesson 06 — Matrix Multiplication**
+**Lesson 03 — Matrix Multiplication**
 
 The *Deep Learning* book now begins using matrix multiplication extensively.
 
