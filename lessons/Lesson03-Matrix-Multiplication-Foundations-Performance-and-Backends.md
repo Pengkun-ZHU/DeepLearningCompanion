@@ -694,16 +694,6 @@ Explain your reasoning.
 
 ### 3
 
-Verify experimentally that
-
-```python
-A @ B
-```
-
-allocates new storage.
-
-### 4
-
 Estimate the number of multiplications required for
 
 ```
@@ -717,7 +707,7 @@ Estimate the number of multiplications required for
 Why does this motivate GPU acceleration?
 
 
-### 5
+### 4
 
 Write a naïve matrix multiplication using three Python loops.
 
@@ -730,28 +720,17 @@ torch.matmul()
 How large is the difference?
 
 
-### 6
+### 5
 
 Research cache locality.
 
 Explain, in your own words, why sequential memory access is generally faster than scattered access.
 
 
-### 7
-
-Research one BLAS implementation (OpenBLAS, MKL or Accelerate).
-
-Summarize its target platform.
-
-
-### 8
+### 6
 
 Compare CPU and GPU execution times for a large matrix multiplication if you have CUDA available.
 
-
-### 9
-
-Explain why `transpose()` does not require BLAS while `matmul()` almost always does.
 
 
 ## Summary
