@@ -46,9 +46,9 @@ C = A × B
 where
 
 ```
-A : (M, K)
-B : (K, N)
-C : (M, N)
+A : (m, k)
+B : (k, n)
+C : (m, n)
 ```
 
 A naïve CUDA implementation assigns **one GPU thread** to compute **one output element**.
@@ -83,7 +83,7 @@ the thread performs
 ```
 sum = 0
 
-for k = 0 ... K-1
+for k = 0 ... k-1
 
     sum += A[i,k] * B[k,j]
 ```
@@ -101,8 +101,8 @@ In a naïve implementation, the computation is typically parallelized by assigni
 dim3 block(16,16);
 
 dim3 grid(
-    ceil(N / 16.0),
-    ceil(M / 16.0)
+    ceil(n / 16.0),
+    ceil(m / 16.0)
 );
 ```
 
@@ -127,22 +127,22 @@ __global__
 void naive_gemm(const float* A,
                 const float* B,
                 float* C,
-                int M,
-                int N,
-                int K)
+                int m,
+                int n,
+                int k)
 {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (row >= M || col >= N)
+    if (row >= m || col >= n)
         return;
 
     float sum = 0.0f;
 
-    for (int k = 0; k < K; ++k)
-        sum += A[row * K + k] * B[k * N + col];
+    for (int k = 0; k < k; ++k)
+        sum += A[row * k + k] * B[k * n + col];
 
-    C[row * N + col] = sum;
+    C[row * n + col] = sum;
 }
 ```
 
@@ -177,8 +177,8 @@ This is identical to the mathematical definition from the *Deep Learning* book.
 dim3 block(16, 16);
 
 dim3 grid(
-    (N + block.x - 1) / block.x,
-    (M + block.y - 1) / block.y);
+    (n + block.x - 1) / block.x,
+    (m + block.y - 1) / block.y);
 
 naive_gemm<<<grid, block>>>(A, B, C, m, n, k);
 ```
@@ -226,7 +226,7 @@ This redundant memory traffic is the primary bottleneck.
 
 ## Fun Fact
 
-You may also notice that the kernel accumulates the result in a local variable `sum` instead of updating `C[row * N + col]` inside the loop.
+You may also notice that the kernel accumulates the result in a local variable `sum` instead of updating `C[row * n + col]` inside the loop.
 
 It is intentional.
 
@@ -242,10 +242,10 @@ Verify that memory access is the bottleneck by comparing your naïve kernel to c
 import torch
 import time
 
-M, N, K = 1024, 1024, 1024
+m, n, k = 1024, 1024, 1024
 
-A = torch.randn(M, K, device='cuda', dtype=torch.float32)
-B = torch.randn(K, N, device='cuda', dtype=torch.float32)
+A = torch.randn(m, k, device='cuda', dtype=torch.float32)
+B = torch.randn(k, n, device='cuda', dtype=torch.float32)
 
 # Warm-up
 for _ in range(10):
@@ -328,7 +328,7 @@ __global__
 void tiled_gemm(const float* A,
                 const float* B,
                 float* C,
-                int M, int N, int K)
+                int m, int n, int )
 {
     __shared__ float tileA[TILE][TILE];
     __shared__ float tileB[TILE][TILE];
@@ -338,16 +338,16 @@ void tiled_gemm(const float* A,
 
     float sum = 0.0f;
 
-    for (int t = 0; t < (K + TILE - 1) / TILE; ++t) {
+    for (int t = 0; t < (k + TILE - 1) / TILE; ++t) {
 
         // Load tiles cooperatively
-        if (row < M && t * TILE + threadIdx.x < K)
-            tileA[threadIdx.y][threadIdx.x] = A[row * K + t * TILE + threadIdx.x];
+        if (row < m && t * TILE + threadIdx.x < k)
+            tileA[threadIdx.y][threadIdx.x] = A[row * k + t * TILE + threadIdx.x];
         else
             tileA[threadIdx.y][threadIdx.x] = 0.0f;
 
-        if (col < N && t * TILE + threadIdx.y < K)
-            tileB[threadIdx.y][threadIdx.x] = B[(t * TILE + threadIdx.y) * N + col];
+        if (col < n && t * TILE + threadIdx.y < k)
+            tileB[threadIdx.y][threadIdx.x] = B[(t * TILE + threadIdx.y) * n + col];
         else
             tileB[threadIdx.y][threadIdx.x] = 0.0f;
 
@@ -360,8 +360,8 @@ void tiled_gemm(const float* A,
         __syncthreads();
     }
 
-    if (row < M && col < N)
-        C[row * N + col] = sum;
+    if (row < m && col < n)
+        C[row * n + col] = sum;
 }
 ```
 
