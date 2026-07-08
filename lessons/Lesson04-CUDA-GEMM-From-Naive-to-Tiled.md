@@ -234,39 +234,6 @@ Unlike CPU programming, CUDA programming requires careful consideration of **whe
 
 Although this optimization may seem unfamiliar at first, it is one of the fundamental principles of GPU programming: perform as much computation as possible in registers, and minimize accesses to global memory. As you progress through this chapter, this pattern will appear repeatedly and gradually become second nature.
 
-## Investigation — Measuring the Bottleneck
-
-Verify that memory access is the bottleneck by comparing your naïve kernel to cuBLAS.
-
-```python
-import torch
-import time
-
-m, n, k = 1024, 1024, 1024
-
-A = torch.randn(m, k, device='cuda', dtype=torch.float32)
-B = torch.randn(k, n, device='cuda', dtype=torch.float32)
-
-# Warm-up
-for _ in range(10):
-    C = torch.matmul(A, B)
-torch.cuda.synchronize()
-
-# Time PyTorch (cuBLAS)
-start = time.perf_counter()
-for _ in range(100):
-    C = torch.matmul(A, B)
-torch.cuda.synchronize()
-elapsed = (time.perf_counter() - start) / 100
-
-print(f"cuBLAS: {elapsed*1000:.3f} ms")
-```
-
-cuBLAS uses tiling internally.
-
-Your naïve kernel will be significantly slower.
-
-
 ## Shared Memory
 
 The fix is **shared memory**: a fast, on-chip scratchpad shared by all threads in the same thread block.
@@ -328,7 +295,7 @@ __global__
 void tiled_gemm(const float* A,
                 const float* B,
                 float* C,
-                int m, int n, int )
+                int m, int n, int k)
 {
     __shared__ float tileA[TILE][TILE];
     __shared__ float tileB[TILE][TILE];
@@ -354,8 +321,8 @@ void tiled_gemm(const float* A,
         __syncthreads();
 
         // Accumulate partial dot product
-        for (int k = 0; k < TILE; ++k)
-            sum += tileA[threadIdx.y][k] * tileB[k][threadIdx.x];
+        for (int i = 0; i < TILE; ++i)
+            sum += tileA[threadIdx.y][i] * tileB[i][threadIdx.x];
 
         __syncthreads();
     }
