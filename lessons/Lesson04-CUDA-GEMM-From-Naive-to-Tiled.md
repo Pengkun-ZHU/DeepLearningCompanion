@@ -1,9 +1,9 @@
-# Lesson 07 — CUDA GEMM: From Naïve to Tiled
+# Lesson 04 — CUDA GEMM: From Naïve to Tiled
 
-| | |
-|---|---|
-| **Chapter** | 2 — Linear Algebra (Companion Extension) |
-| **Reading Assignment** | CUDA Programming Guide Chapters 1–3; CUDA Programming Guide: Shared Memory |
+|Book|Chapter|Section|
+|---|---|---|
+| CUDA Programming Guide | Chapters 1–3 | All |
+
 
 This lesson bridges the gap between calling `torch.matmul()` and understanding how a GPU actually computes matrix multiplication, then transforms a naïve kernel into a tiled implementation using shared memory.
 

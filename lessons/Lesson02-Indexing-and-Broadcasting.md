@@ -1,9 +1,9 @@
 # Lesson 02 — Tensor Indexing and Broadcasting
 
-| | |
-|---|---|
-| **Chapter** | 2 — Linear Algebra |
-| **Reading Assignment** | Continue Chapter 2 (Operations on Tensors) |
+|Book|Chapter|Section|
+|---|---|---|
+| Deep Learning | 2 — Linear Algebra |Continue Chapter 2 (Operations on Tensors)|
+
 
 This lesson assumes you have completed Lesson 01 and are familiar with tensor storage, strides, and views.
 

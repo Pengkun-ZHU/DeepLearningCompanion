@@ -1,9 +1,8 @@
 # Lesson 03 — Matrix Multiplication: Foundations, Performance, and Backends
 
-| | |
-|---|---|
-| **Chapter** | 2 — Linear Algebra |
-| **Reading Assignment** | Matrix multiplication (Chapter 2) |
+|Book|Chapter|Section|
+|---|---|---|
+| Deep Learning | 2 — Linear Algebra |Matrix multiplication part|
 
 This lesson covers what matrix multiplication is, why naïve implementations are slow, and how PyTorch delegates the work to highly optimized backend libraries.
 
