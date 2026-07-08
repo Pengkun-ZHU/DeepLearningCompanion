@@ -95,7 +95,7 @@ CUDA changes **who performs the work**, not **what is computed**.
 
 ## Grid and Block Mapping
 
-A common launch configuration is
+In a naïve implementation, the computation is typically parallelized by assigning each output element to a unique thread. The following layout shows one such thread-to-element mapping.
 
 ```cpp
 dim3 block(16,16);
@@ -146,6 +146,16 @@ void naive_gemm(const float* A,
 }
 ```
 
+## Fun Fact
+
+You may notice that the kernel accumulates the result in a local variable `sum` instead of updating `C[row * N + col]` inside the loop.
+
+It is intentional.
+
+Unlike CPU programming, CUDA programming requires careful consideration of where data resides. The output matrix C is stored in global memory, accesses to it have much higher latency than accesses to registers. A local variable such as sum is typically allocated to a register, allowing the accumulation to proceed using the fastest storage available. After the entire dot product has been computed, the final result is written to global memory exactly once.
+
+Although this optimization may seem unfamiliar at first, it is one of the fundamental principles of GPU programming: perform as much computation as possible in registers, and minimize accesses to global memory. As you progress through this chapter, this pattern will appear repeatedly and gradually become second nature.
+
 ### Understanding the Indexing
 
 Each thread computes exactly one element:
@@ -179,7 +189,7 @@ dim3 grid(
     (N + block.x - 1) / block.x,
     (M + block.y - 1) / block.y);
 
-naive_gemm<<<grid, block>>>(A, B, C, M, N, K);
+naive_gemm<<<grid, block>>>(A, B, C, m, n, k);
 ```
 
 The rounding ensures every output element is assigned a thread.
