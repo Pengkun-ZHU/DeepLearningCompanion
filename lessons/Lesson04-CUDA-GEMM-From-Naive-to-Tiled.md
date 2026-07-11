@@ -15,7 +15,9 @@ By the end of this lesson you should be able to:
 - understand the naïve CUDA GEMM execution model;
 - identify threads, blocks and grids in a matrix multiplication kernel;
 - write a naïve CUDA GEMM kernel and verify its correctness;
+- understand the grid-stride pattern and why it is needed when the grid cannot cover the full output;
 - explain what shared memory is in the CUDA memory hierarchy;
+- understand that tiling is a shared-memory optimization, not a parallelization strategy;
 - understand why tiling dramatically reduces global memory traffic;
 - implement a tiled GEMM kernel;
 - recognize the pattern that underlies real-world GEMM implementations.
@@ -120,7 +122,9 @@ Grid
 Each thread determines which matrix element it owns from its block and thread indices.
 
 
-## Naïve GEMM Kernel
+## Naïve GEMM Kernel — One Thread Per Element
+
+The simplest correct implementation assigns exactly one thread to each output element.
 
 ```cpp
 __global__
@@ -183,7 +187,7 @@ dim3 grid(
 naive_gemm<<<grid, block>>>(A, B, C, m, n, k);
 ```
 
-The rounding ensures every output element is assigned a thread.
+The `ceil`-style division ensures every output element is assigned a thread. The grid simply grows with the matrix dimensions.
 
 ### Verify Correctness
 
@@ -193,6 +197,49 @@ Compare the CUDA result with:
 - `torch.matmul()`.
 
 Numerical differences should only be due to floating-point rounding.
+
+
+## Grid Stride — When the Grid Can't Cover the Matrix
+
+The one-thread-per-element kernel above assumes the grid can be made large enough to assign a unique thread to every output element. This is true on modern GPUs, whose hardware grid limits are very generous (e.g., up to 2³¹−1 blocks in the x dimension), easily covering any realistically sized matrix.
+
+But this was not always the case on older architectures, and there are practical reasons to **cap** the grid size regardless — for example, to match the GPU's occupancy sweet spot rather than queuing far more blocks than it can run concurrently.
+
+The solution is the **grid-stride pattern**: keep the grid at a fixed size, and let each thread traverse the output by stepping in grid-sized increments.
+
+```cpp
+__global__
+void stride_gemm(const float* A,
+                 const float* B,
+                 float* C,
+                 int m, int n, int k)
+{
+    for (int row = blockIdx.y * blockDim.y + threadIdx.y;
+             row < m;
+             row += gridDim.y * blockDim.y) {
+        for (int col = blockIdx.x * blockDim.x + threadIdx.x;
+                 col < n;
+                 col += gridDim.x * blockDim.x) {
+
+            float sum = 0.0f;
+            for (int kk = 0; kk < k; ++kk)
+                sum += A[row * k + kk] * B[kk * n + col];
+
+            C[row * n + col] = sum;
+        }
+    }
+}
+```
+
+The key change:
+
+```cpp
+row += gridDim.y * blockDim.y    // stride through rows
+col += gridDim.x * blockDim.x    // stride through columns
+```
+
+Each thread now visits a **stride** of output positions rather than just one. This decouples the grid size from the matrix size: the grid can be smaller than the output, and correctness is preserved.
+
 
 
 ## The Memory Bottleneck
@@ -260,30 +307,42 @@ Global memory is slow.
 
 Shared memory is much faster — but it must be managed explicitly.
 
+There is, however, a catch. Shared memory is **limited in capacity and private to each thread block**. A typical block has 48 KB or 96 KB of shared memory. A 4096 × 4096 matrix of `float32` requires 64 MB — far more than any single block can hold.
 
-## The Tiling Idea
+So we cannot simply load the entire input matrix into shared memory. We need a strategy that works within this capacity limit.
 
-Instead of each thread loading data independently, the entire block cooperates.
 
-The matrices are divided into **tiles**.
+## Tiling — Working Within Shared Memory
+
+This is where **tiling** comes in.
+
+Tiling is not about making the computation *possible* for large matrices — grid stride already handles that. Tiling is a **memory optimization**: it partitions the input matrices into small chunks (tiles) that fit in shared memory, so that data can be reused rather than repeatedly fetched from global memory.
+
+Instead of each thread loading data independently from global memory, the entire block cooperates to load small tiles into shared memory.
+
+The matrices are divided into **tiles** of size TILE × TILE:
 
 ```
 A               B
 
-+---+---+       +---+---+
-|   |   |       |   |   |
-+---+---+       +---+---+
-|   |   |       |   |   |
-+---+---+       +---+---+
++---+---+---+       +---+---+---+
+| T | T |...|       | T | T |...|
++---+---+---+       +---+---+---+
+| T |...|...|       | T |...|...|
++---+---+---+       +---+---+---+
+|...|...|...|       |...|...|...|
++---+---+---+       +---+---+---+
 ```
 
-For each tile along the shared dimension:
+For each tile along the shared dimension `k`:
 
 1. Every thread in the block loads one element of the `A` tile into shared memory.
 2. Every thread in the block loads one element of the `B` tile into shared memory.
-3. All threads synchronize.
+3. All threads synchronize (`__syncthreads()`).
 4. Each thread accumulates its partial dot product using shared memory values.
 5. Repeat for the next tile.
+
+Notice the pattern: **load → sync → compute → sync → replace**. The tile is the unit of data movement, not the unit of parallelism. Once this distinction becomes clear, it is also easier to see that neither the tile nor the matrix is required to be square.
 
 
 ## Tiled GEMM Kernel
@@ -352,17 +411,22 @@ Removing either barrier introduces race conditions.
 
 ## Companion Insight
 
-Tiling is a memory hierarchy optimization.
+Tiling is a memory hierarchy optimization — specifically, a strategy for working within the capacity limits of shared memory.
 
 The key idea is:
 
-> Load data from slow global memory once, reuse it many times from fast shared memory.
+> Shared memory is fast but small and block-private. Since the full matrix cannot fit, we partition it into tiles, load each tile cooperatively, reuse it, and then replace it. This turns a capacity constraint into a streaming pattern.
 
-This pattern appears throughout high-performance computing:
+This is sometimes confused with a parallelization technique, but it is not:
 
-- CPU caches do the same thing automatically.
-- Shared memory in CUDA requires explicit management.
-- Real GEMM libraries (cuBLAS, CUTLASS) use multi-level tiling across the full memory hierarchy.
+- **Stride / grid sizing** handles "how do we cover all output elements with threads."
+- **Tiling** handles "how do we fit the data into fast, limited shared memory."
+
+The same principle appears throughout high-performance computing:
+
+- CPU caches do the same thing automatically (cache lines are "tiles" of memory).
+- Shared memory in CUDA requires explicit management — the programmer writes the tile loop.
+- Real GEMM libraries (cuBLAS, CUTLASS) use multi-level tiling across the full memory hierarchy (registers → shared memory → L2 → global memory).
 
 Understanding tiled GEMM reveals why matrix multiplication on modern hardware is not just mathematically intensive but also carefully engineered to match the memory hierarchy.
 
@@ -404,6 +468,11 @@ Draw a 2×2 thread block computing a 2×2 output tile.
 Explain why assigning one thread per output element is logically correct.
 
 
+### 2b
+
+Describe a scenario where the one-thread-per-element kernel would fail, and explain how the grid-stride pattern resolves it.
+
+
 ### 3
 
 Estimate how many multiply-add operations one thread performs when multiplying a `(1024,1024)` matrix.
@@ -413,17 +482,13 @@ How many global memory reads does it perform in the naïve kernel?
 
 ### 4
 
-Why do neighboring threads repeatedly access the same input values in the naïve kernel?
-
-
-### 5
-
 Change the block size in the naïve kernel to `(8,8)`, `(16,16)` and `(32,8)`.
 
 Verify correctness for each configuration.
 
 
-### 6
+
+### 5
 
 Implement the tiled kernel.
 
@@ -434,7 +499,7 @@ torch.matmul(A, B)
 ```
 
 
-### 7
+### 6
 
 Benchmark the naïve and tiled kernels for matrix sizes
 
@@ -444,15 +509,13 @@ Benchmark the naïve and tiled kernels for matrix sizes
 1024 × 1024
 ```
 
-Plot the speedup.
 
-
-### 8
+### 7
 
 Explain in your own words why shared memory reduces global memory traffic.
 
 
-### 9
+### 8
 
 What happens if you remove the first `__syncthreads()`?
 
@@ -461,15 +524,13 @@ Design an experiment to demonstrate the problem.
 
 ## Summary
 
-A naïve CUDA GEMM assigns one thread per output element and correctly mirrors the mathematical definition.
+A naïve CUDA GEMM assigns one thread per output element and correctly mirrors the mathematical definition. The grid grows with the matrix dimensions, and on modern GPUs this simple mapping covers any realistic matrix size.
 
-Its bottleneck is global memory: neighboring threads repeatedly fetch the same input values independently.
+When the grid cannot cover the full output — due to hardware limits on older architectures, or to cap occupancy — the **grid-stride pattern** extends the kernel so each thread processes multiple output positions, decoupling grid size from matrix size.
 
-Tiled GEMM replaces independent per-thread memory loads with cooperative block-level loading into shared memory.
+Neither strategy, however, addresses the real performance bottleneck: redundant global memory traffic. Neighboring threads repeatedly fetch the same input values independently.
 
-Each value fetched from global memory is reused `TILE` times.
-
-This dramatically reduces memory bandwidth requirements and improves throughput.
+**Shared memory** offers fast, on-chip storage — but it is limited in capacity and private to each block. **Tiling** is the strategy that works within this constraint: the input matrices are partitioned into small tiles that are cooperatively loaded, reused, and replaced. Each value fetched from global memory is reused `TILE` times, dramatically reducing memory bandwidth requirements.
 
 Real GEMM libraries extend this principle to multiple levels of the memory hierarchy.
 
