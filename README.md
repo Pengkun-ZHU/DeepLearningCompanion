@@ -72,23 +72,9 @@ roadmap.md
 lessons/
     Companion lessons following the Deep Learning book.
 
-experiments/
-    Small investigations accompanying each lesson.
-
-cuda/
-    CUDA examples for performance-critical topics.
-
-source_tours/
-    Guided reading of PyTorch source code.
-
 minitorch/
     A minimal deep learning framework implemented incrementally.
 
-figures/
-    Diagrams used throughout the lessons.
-
-references/
-    Additional books, papers and resources.
 ```
 
 
