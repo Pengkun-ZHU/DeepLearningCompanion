@@ -4,8 +4,6 @@
 
 
 
-## Why This Repository Exists
-
 The book **Deep Learning** is one of the best references for understanding the theory behind modern machine learning.
 
 However, like most textbooks, it deliberately focuses on **what** the algorithms are and **why** they work. It does not attempt to explain in detail:
@@ -20,6 +18,7 @@ However, like most textbooks, it deliberately focuses on **what** the algorithms
 This repository is designed to answer those questions.
 
 Rather than replacing the book, **DeepLearningCompanion** is intended to be read **alongside** it.
+
 
 
 # Learning Philosophy
@@ -190,8 +189,26 @@ By the end of this repository, you should be able to:
 * read implementation code with confidence.
 
 
+# Planned: Interactive Web Platform
+
+A major planned feature is an **interactive web-based code editor** that will let you run the Python and CUDA code from every lesson directly in your browser — no local GPU, no PyTorch installation, no CUDA toolkit, no version mismatches.
+
+The goal is to remove all environment friction so you can focus entirely on learning.
+
+See **roadmap.md** for the full plan and status of this feature.
+
+
 # Progress
 
 See **roadmap.md** for the complete learning roadmap.
 
 Lessons are designed to be completed sequentially, following the order of the **Deep Learning** book.
+
+
+# Contributions Welcome
+
+This repository is the result of my journey from an experienced software engineer into the world of deep learning systems. I am still actively learning these subjects, and these notes are part of that process—not the final word on them.
+
+That means mistakes are possible: in the explanations, the code, the CUDA details, or the connections drawn between theory and implementation. If you notice something incorrect, misleading, or that could be explained more clearly, I would genuinely appreciate your feedback.
+
+Corrections, suggestions, pull requests, and even a simple issue pointing out a mistake are all warmly welcome. Improving the repository together is one of the best contributions you can make.
