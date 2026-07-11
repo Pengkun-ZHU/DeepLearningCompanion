@@ -21,7 +21,7 @@ Rather than replacing the book, **DeepLearningCompanion** is intended to be read
 
 
 
-# Learning Philosophy
+## Learning Philosophy
 
 Every lesson begins with a reading assignment from the **Deep Learning** book.
 
@@ -48,7 +48,7 @@ The objective is not simply to learn deep learning.
 The objective is to understand **how modern deep learning systems are built.**
 
 
-# Target Audience
+## Target Audience
 
 This repository assumes the reader:
 
@@ -60,7 +60,7 @@ This repository assumes the reader:
 This is **not** an introductory programming course.
 
 
-# Repository Structure
+## Repository Structure
 
 ```text
 DeepLearningCompanion/
@@ -77,7 +77,7 @@ minitorch/
 ```
 
 
-# Lesson Structure
+## Lesson Structure
 
 Every lesson follows the same format.
 
@@ -114,7 +114,7 @@ The **Deep Learning** book remains the authoritative source for theory.
 This repository focuses on implementation, engineering, and practical investigation.
 
 
-# Guiding Principles
+## Guiding Principles
 
 ### 1. The Book Comes First
 
@@ -159,7 +159,7 @@ Concepts introduced in one lesson reappear throughout the repository from differ
 Each revisit adds another layer of understanding.
 
 
-# Experiments
+## Experiments
 
 Most lessons include one or more small investigations.
 
@@ -175,7 +175,7 @@ These are intentionally designed to answer questions such as:
 The experiments are intended to encourage exploration rather than simply verify expected results.
 
 
-# Long-Term Goals
+## Long-Term Goals
 
 By the end of this repository, you should be able to:
 
@@ -189,7 +189,7 @@ By the end of this repository, you should be able to:
 * read implementation code with confidence.
 
 
-# Planned: Interactive Web Platform
+## Planned: Interactive Web Platform
 
 A major planned feature is an **interactive web-based code editor** that will let you run the Python and CUDA code from every lesson directly in your browser — no local GPU, no PyTorch installation, no CUDA toolkit, no version mismatches.
 
@@ -198,14 +198,14 @@ The goal is to remove all environment friction so you can focus entirely on lear
 See **roadmap.md** for the full plan and status of this feature.
 
 
-# Progress
+## Progress
 
 See **roadmap.md** for the complete learning roadmap.
 
 Lessons are designed to be completed sequentially, following the order of the **Deep Learning** book.
 
 
-# Contributions Welcome
+## Contributions Welcome
 
 This repository is the result of my journey from an experienced software engineer into the world of deep learning systems. I am still actively learning these subjects, and these notes are part of that process—not the final word on them.
 
