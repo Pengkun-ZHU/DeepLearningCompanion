@@ -211,4 +211,4 @@ This repository is the result of my journey from an experienced software enginee
 
 That means mistakes are possible: in the explanations, the code, the CUDA details, or the connections drawn between theory and implementation. If you notice something incorrect, misleading, or that could be explained more clearly, I would genuinely appreciate your feedback.
 
-Corrections, suggestions, pull requests, and even a simple issue pointing out a mistake are all warmly welcome. Improving the repository together is one of the best contributions you can make.
+Corrections, suggestions, pull requests, or even a simple issue pointing out a typo are all warmly welcome. Every perspective helps make this a better resource for everyone.
