@@ -548,19 +548,19 @@ As models become larger, this operation quickly becomes the dominant computation
 
 PyTorch provides several interfaces.
 
-Strict 2D Matrix Multiplication:
+Strict 2D matrix multiplication:
 ```python
 torch.mm(A, B)
 ```
 
-Broadcastable & Multi-Dimensional Multiplication:
+Broadcastable & multi-dimensional multiplication:
 
 
 ```python
 torch.matmul(A, B)
 ```
 
-The Idiomatic Operator that PyTorch overrides to call `torch.matmul(A, B)` under the hood:
+The idiomatic operator that PyTorch overrides to call `torch.matmul(A, B)` under the hood:
 
 ```python
 A @ B
