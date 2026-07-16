@@ -1,9 +1,9 @@
 # Lesson 08 — Norms, Special Matrices, and Decompositions
 
-| | |
-|---|---|
-| **Chapter** | 2 — Linear Algebra |
-| **Reading Assignment** | Sections 2.5–2.12 (Norms, Special Matrices, Eigendecomposition, SVD, PCA) |
+|Book|Chapter|Section|
+|---|---|---|
+| Deep Learning | 2 — Linear Algebra  | Sections 2.5–2.12 (Norms, Special Matrices, Eigendecomposition, SVD, PCA) |
+
 
 This lesson covers the remaining sections of Chapter 2 and their PyTorch implementations.
 
