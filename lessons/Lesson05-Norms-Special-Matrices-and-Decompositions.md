@@ -24,7 +24,7 @@ The *Deep Learning* book covers these topics to build the mathematical vocabular
 
 From an implementation perspective, these operations share an important characteristic:
 
-> They produce new matrices that are computationally derived from the input — there is no metadata shortcut.
+They produce new matrices that are computationally derived from the input — there is no metadata shortcut.
 
 Understanding their computational cost helps you reason about where they should and should not appear in a training loop. As you work through this chapter, it is worth asking yourself — and verifying experimentally — what each operation actually costs.
 
