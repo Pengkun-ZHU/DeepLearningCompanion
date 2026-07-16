@@ -137,13 +137,13 @@ $$
 If the tensor begins in the middle of a storage:
 
 $$
-\text{offset} = \text{offset} + \text{storage\_offset}
+\text{offset} = \text{offset} + \text{storage offset}
 $$
 
 Finally:
 
 $$
-\text{address} = \text{base\_pointer} + \text{offset}
+\text{address} = \text{base pointer} + \text{offset}
 $$
 
 This is the essential indexing algorithm used by tensor libraries.
@@ -441,7 +441,7 @@ Without referring to the documentation, explain broadcasting using only the conc
 Tensor indexing converts logical indices into a memory address using a simple formula:
 
 $$
-\text{offset} = \text{storage\_offset} + \sum_{d=0}^{n-1} \text{index}[d] \times \text{stride}[d]
+\text{offset} = \text{storage offset} + \sum_{d=0}^{n-1} \text{index}[d] \times \text{stride}[d]
 $$
 
 Broadcasting achieves operations on differently-shaped tensors by setting certain strides to zero, creating the illusion of a larger tensor without allocating additional memory.
