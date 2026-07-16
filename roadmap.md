@@ -11,14 +11,11 @@ This roadmap tracks the planned lessons and long-term goals for **DeepLearningCo
 | 02 | Indexing and Broadcasting | ✅ Published |
 | 03 | Matrix Multiplication — Foundations, Performance, and Backends | ✅ Published |
 | 04 | CUDA GEMM — From Naive to Tiled | ✅ Published |
-| 05 | Norms, Special Matrices, and Decompositions | 🔲 Planned |
-| 06 | Random Variables and Probability Fundamentals | 🔲 Planned |
-| 07 | Common Probability Distributions | 🔲 Planned |
-| 08 | Information Theory — Entropy, Cross-Entropy, KL Divergence | 🔲 Planned |
-| 09 | Numerical Precision and Stability | 🔲 Planned |
-| 10 | Gradient-Based Optimization Foundations | 🔲 Planned |
-| 11 | Computational Graphs and Autograd | 🔲 Planned |
-| 12 | Learning Algorithms and the ML Pipeline | 🔲 Planned |
+| 05 | Norms, Special Matrices, and Decompositions | ✅ Published |
+| 06 | Probability, Information Theory, and Numerical Stability | 🔲 Planned |
+| 07 | Gradient-Based Optimisation Foundations | 🔲 Planned |
+| 08 | Computational Graphs and Autograd | 🔲 Planned |
+| 09 | Learning Algorithms and the ML Pipeline | 🔲 Planned |
 | | ⋯ | |
 | | **To Be Decided** | |
 | | Additional topics covering regularisation, maximum likelihood estimation, Bayesian inference, advanced optimisers, and more — to be announced as the curriculum develops. | |
