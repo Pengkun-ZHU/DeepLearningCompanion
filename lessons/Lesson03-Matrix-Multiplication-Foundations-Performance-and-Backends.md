@@ -578,9 +578,9 @@ Higher-dimensional tensors reveal very different design philosophies.
 
 It views all tensor dimensions through a classical linear algebra lens. It applies a uniform contraction formula:
 
-```text
-dot(a, b)[i, j, ..., m, n, p, ..., o] = sum(a[i, j, ..., m, :] * b[n, p, ..., :, o])
-```
+$$
+\text{dot}(a, b)_{i,j,\ldots,m,\;n,p,\ldots,o} = \sum_\ell a_{i,j,\ldots,m,\,\ell} \cdot b_{n,p,\ldots,\ell,\,o}
+$$
 
 All leading dimensions participate symmetrically — there is no concept of a dedicated batch axis.
 
@@ -588,9 +588,9 @@ All leading dimensions participate symmetrically — there is no concept of a de
 
 It separates batch dimensions from the actual computation. The last two dimensions perform strict matrix multiplication, while leading dimensions are treated as batch indices:
 
-```text
-matmul(a, b)[..., i, j] = sum(a[..., i, k] * b[..., k, j])
-```
+$$
+\text{matmul}(a, b)_{\ldots,i,j} = \sum_k a_{\ldots,i,k} \cdot b_{\ldots,k,j}
+$$
 
 The leading dimensions are broadcast as batch dimensions, while only the last two axes participate in the matrix product itself.
 

@@ -74,21 +74,11 @@ Each thread computes exactly one value of `C`.
 
 ## What Does One Thread Do?
 
-For output element
+For output element $C[i, j]$, the thread performs
 
-```
-C[i, j]
-```
-
-the thread performs
-
-```
-sum = 0
-
-for k = 0 ... k-1
-
-    sum += A[i,k] * B[k,j]
-```
+$$
+C[i,j] = \sum_{k=0}^{K-1} A[i,k] \cdot B[k,j]
+$$
 
 This is exactly the mathematical definition from the *Deep Learning* book.
 

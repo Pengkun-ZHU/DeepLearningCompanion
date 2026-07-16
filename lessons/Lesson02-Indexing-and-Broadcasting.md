@@ -130,21 +130,21 @@ Total offset = 8 + 1 = 9
 
 For an N-dimensional tensor:
 
-```
-offset = Σ  index[d] × stride[d]
-```
+$$
+\text{offset} = \sum_d \text{index}[d] \times \text{stride}[d]
+$$
 
 If the tensor begins in the middle of a storage:
 
-```
-offset += storage_offset
-```
+$$
+\text{offset} = \text{offset} + \text{storage\_offset}
+$$
 
 Finally:
 
-```
-address = base_pointer + offset
-```
+$$
+\text{address} = \text{base\_pointer} + \text{offset}
+$$
 
 This is the essential indexing algorithm used by tensor libraries.
 
@@ -440,9 +440,9 @@ Without referring to the documentation, explain broadcasting using only the conc
 
 Tensor indexing converts logical indices into a memory address using a simple formula:
 
-```
-offset = storage_offset + Σ(index[d] * stride[d]) for d = 0 to n-1
-```
+$$
+\text{offset} = \text{storage\_offset} + \sum_{d=0}^{n-1} \text{index}[d] \times \text{stride}[d]
+$$
 
 Broadcasting achieves operations on differently-shaped tensors by setting certain strides to zero, creating the illusion of a larger tensor without allocating additional memory.
 
