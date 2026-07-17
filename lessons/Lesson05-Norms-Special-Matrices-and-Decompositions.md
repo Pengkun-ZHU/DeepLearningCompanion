@@ -281,8 +281,6 @@ Each of these dispatches to LAPACK (on CPU) or cuSOLVER (on CUDA).
 
 This delegation pattern is not limited to matrix multiplication. Norms, decompositions, solves, and other structured linear algebra operations are all handed off to specialised third-party libraries — LAPACK, cuSOLVER, and MAGMA among them. PyTorch's role is to provide a unified tensor API; the heavy numerical lifting is done by battle-tested Fortran and CUDA code that has been optimised for decades.
 
-These are the same libraries used in MATLAB and NumPy.
-
 
 ## Exercises
 
