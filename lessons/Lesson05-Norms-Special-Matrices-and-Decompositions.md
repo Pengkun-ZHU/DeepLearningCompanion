@@ -1,4 +1,4 @@
-# Lesson 08 — Norms, Special Matrices, and Decompositions
+# Lesson 05 — Norms, Special Matrices, and Decompositions
 
 |Book|Chapter|Section|
 |---|---|---|
@@ -73,9 +73,12 @@ print(torch.linalg.norm(A, ord='fro'))
 print(torch.linalg.norm(A, ord=2))
 ```
 
+The Frobenius norm is often used to measure weight matrix magnitude in regularization.
+
+The spectral norm is often used to measure and bound a model's sensitivity to input perturbations, helping to improve adversarial robustness and analyze generalization.
+
 Computing the spectral norm does **not** perform a full SVD. Optimised linear algebra backends (LAPACK on CPU, cuSOLVER on CUDA, MAGMA where available) typically compute only the largest singular value, using iterative methods such as power iteration or Lanczos bidiagonalisation when appropriate. This is significantly cheaper than a complete decomposition.
 
-The Frobenius norm is often used to measure weight matrix magnitude in regularization.
 
 
 ## Special Matrices
@@ -119,6 +122,8 @@ Q, _ = torch.linalg.qr(torch.randn(4, 4))
 print(torch.allclose(Q @ Q.T, torch.eye(4), atol=1e-5))   # True
 print(torch.allclose(Q.T @ Q, torch.eye(4), atol=1e-5))   # True
 ```
+
+> "In linear algebra, a QR decomposition, also known as a QR factorization or QU factorization, is a decomposition of a matrix A into a product A = QR of an orthonormal matrix Q and an upper triangular matrix R. QR decomposition is often used to solve the linear least squares (LLS) problem and is the basis for a particular eigenvalue algorithm, the QR algorithm." — Wikipedia
 
 Orthogonal matrices preserve norms.
 
