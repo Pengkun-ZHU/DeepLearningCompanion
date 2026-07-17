@@ -183,7 +183,9 @@ A @ B
 
 They perform completely different operations.
 
-### Element-wise multiplication
+The element-wise product has a formal name: the **Hadamard product**, written $A \odot B$. In PyTorch, the `*` operator computes the Hadamard product, while `@` (or `torch.matmul`) computes the matrix product.
+
+### Hadamard product (element-wise)
 
 ```
 1 2
@@ -197,7 +199,7 @@ They perform completely different operations.
 5 12
 ```
 
-Each element interacts only with the element in the same position.
+Each element interacts only with the element in the same position. The Hadamard product is trivially parallel — each output element depends on exactly two input elements, with no accumulation loop.
 
 ### Matrix multiplication
 

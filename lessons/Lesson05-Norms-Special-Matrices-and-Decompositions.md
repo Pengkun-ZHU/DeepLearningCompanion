@@ -93,14 +93,76 @@ D = torch.diag(d)
 print(D)
 ```
 
-Multiplying by a diagonal matrix is inexpensive:
+Multiplying by a diagonal matrix is inexpensive. When one operand is a diagonal matrix, the matrix product $D x$ is mathematically equivalent to the Hadamard (element-wise) product of the diagonal vector and $x$:
+
+$$
+D x = d \odot x
+$$
+
+In PyTorch, the `*` operator computes the Hadamard product — so `d * x` gives the same result as `D @ x`, but without ever constructing the full 2-D matrix:
 
 ```python
 x = torch.randn(3)
 
-# Equivalent to D @ x
+# Effectively equivalent to D @ x — but largely different performance-wise
 print(d * x)
 ```
+
+The difference is dramatic at scale. The benchmark below compares the two approaches on a 10,000-element diagonal:
+
+```python
+import torch
+import time
+
+N = 10000          # diagonal size
+num_runs = 100
+
+def run_benchmark(device_name):
+    device = torch.device(device_name)
+    print(f"\n=== Running Benchmark on: {device.type.upper()} ===")
+
+    d = torch.randn(N, device=device)          # 1-D diagonal  (~40 KB)
+    x = torch.randn(N, device=device)
+    D = torch.diag(d)                           # 2-D matrix   (~400 MB!)
+
+    # Warmup
+    for _ in range(5):
+        _ = d * x
+        _ = D @ x
+    if device.type == "cuda":
+        torch.cuda.synchronize()
+
+    # --- Hadamard product (d * x) ---
+    start = time.perf_counter()
+    for _ in range(num_runs):
+        result_fast = d * x
+    if device.type == "cuda":
+        torch.cuda.synchronize()
+    fast_time = (time.perf_counter() - start) / num_runs
+
+    # --- Matrix product (D @ x) ---
+    start = time.perf_counter()
+    for _ in range(num_runs):
+        result_slow = D @ x
+    if device.type == "cuda":
+        torch.cuda.synchronize()
+    slow_time = (time.perf_counter() - start) / num_runs
+
+    assert torch.allclose(result_fast, result_slow, atol=1e-5)
+
+    print(f"Hadamard  (d * x) : {fast_time * 1000:.4f} ms")
+    print(f"Matmul    (D @ x) : {slow_time * 1000:.4f} ms")
+    print(f"Speedup           : {slow_time / fast_time:.1f}x")
+
+run_benchmark("cpu")
+
+if torch.cuda.is_available():
+    run_benchmark("cuda")
+else:
+    print("\nCUDA not available — skipping GPU benchmark.")
+```
+
+The speedup comes from two sources: the Hadamard path avoids allocating the $N \times N$ matrix entirely, and it reduces the computation from $O(N^2)$ to $O(N)$. Whenever a diagonal matrix appears in a derivation, it is worth checking whether the full matrix can be replaced by its 1-D vector of diagonal entries.
 
 ### Symmetric matrices
 
