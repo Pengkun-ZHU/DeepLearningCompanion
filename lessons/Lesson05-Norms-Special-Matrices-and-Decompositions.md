@@ -77,7 +77,7 @@ The Frobenius norm is often used to measure weight matrix magnitude in regulariz
 
 The spectral norm is often used to measure and bound a model's sensitivity to input perturbations, helping to improve adversarial robustness and analyze generalization.
 
-Computing the spectral norm does **not** perform a full SVD. Optimised linear algebra backends (LAPACK on CPU, cuSOLVER on CUDA, MAGMA where available) typically compute only the largest singular value, using iterative methods such as power iteration or Lanczos bidiagonalisation when appropriate. This is significantly cheaper than a complete decomposition.
+Computing the spectral norm does **not** perform a full SVD. Optimised linear algebra backends typically compute only the largest singular value, using iterative methods such as power iteration or Lanczos bidiagonalisation when appropriate. This is significantly cheaper than a complete decomposition.
 
 
 
