@@ -12,7 +12,7 @@ This roadmap tracks the planned lessons and long-term goals for **DeepLearningCo
 | 03 | Matrix Multiplication — Foundations, Performance, and Backends | ✅ Published |
 | 04 | CUDA GEMM — From Naive to Tiled | ✅ Published |
 | 05 | Norms, Special Matrices, and Decompositions | ✅ Published |
-| 06 | Probability, Information Theory, and Numerical Stability | 🔲 Planned |
+| 06 | Probability, Information Theory, and Numerical Stability | ✅ Published |
 | 07 | Gradient-Based Optimisation Foundations | 🔲 Planned |
 | 08 | Computational Graphs and Autograd | 🔲 Planned |
 | 09 | Learning Algorithms and the ML Pipeline | 🔲 Planned |
