@@ -337,8 +337,8 @@ The key engineering insight is that operations which require genuine computation
 
 ## Next Lesson
 
-**Lesson 09 — Random Variables and Probability Fundamentals**
+**Lesson 06 — Probability, Information Theory, and Numerical Stability**
 
-Chapter 3 of the *Deep Learning* book introduces probability theory.
+Chapter 3 of the *Deep Learning* book introduces probability theory and information theory, and chapter 4 introduces numerical computation.
 
-We'll connect the mathematical definitions to PyTorch's random number and distribution infrastructure, and begin exploring what it means to model uncertainty computationally.
+The two chapters are combined into a single lesson, connecting the mathematical definitions to PyTorch's random number and distribution infrastructure, and exploring what it means to model uncertainty computationally.

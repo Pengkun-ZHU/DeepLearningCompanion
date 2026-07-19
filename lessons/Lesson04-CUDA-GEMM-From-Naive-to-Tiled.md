@@ -527,7 +527,7 @@ Real GEMM libraries extend this principle to multiple levels of the memory hiera
 
 ## Next Lesson
 
-**Lesson 08 — Norms, Special Matrices, and Decompositions**
+**Lesson 05 — Norms, Special Matrices, and Decompositions**
 
 We return to the *Deep Learning* book to cover the remaining sections of Chapter 2:
 

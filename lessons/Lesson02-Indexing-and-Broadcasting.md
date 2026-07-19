@@ -453,8 +453,8 @@ Shape, stride, and storage offset together form the complete description of how 
 
 ## Next Lesson
 
-**Lesson 03 — Matrix Multiplication**
+**Lesson 03 — Matrix Multiplication: Foundations, Performance, and Backends**
 
 The *Deep Learning* book now begins using matrix multiplication extensively.
 
-We'll connect the mathematical notation `AB` to `torch.matmul()` and investigate why matrix multiplication is fundamentally different from `transpose()` or `expand()`: it **must** compute new values and therefore almost always allocates new memory.
+The mathematical notation `AB` is connected to `torch.matmul()`, and the fundamental difference between matrix multiplication and `transpose()` or `expand()` is examined: matrix multiplication **must** compute new values and therefore almost always allocates new memory.
