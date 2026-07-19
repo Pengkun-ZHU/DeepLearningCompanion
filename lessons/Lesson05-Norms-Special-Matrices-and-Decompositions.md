@@ -141,7 +141,7 @@ print(torch.linalg.norm(Q @ x))    # ≈ torch.linalg.norm(x)
 A matrix `A` can be decomposed as:
 
 $$
-A = V \, \text{diag}(\lambda) \, V^{-1}
+A = V \ \text{diag}(\lambda) \ V^{-1}
 $$
 
 where $\lambda$ are eigenvalues and the columns of $V$ are eigenvectors.
