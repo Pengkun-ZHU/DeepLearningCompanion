@@ -154,7 +154,7 @@ x = torch.tensor(3.5)
 print(f"log p(x=3.5) = {dist.log_prob(x):.4f}")
 ```
 
-Using a Gaussian output is equivalent to minimising mean squared error. Maximising \(\log p(y \mid x)\) for a Gaussian reduces to minimising \((y - \mu)^2 / 2\sigma^2\).
+Using a Gaussian output is equivalent to minimising mean squared error. Maximising $\log p(y \mid x)$ for a Gaussian reduces to minimising $(y - \mu)^2 / 2\sigma^2$.
 
 
 ### Laplace — Robust Regression
@@ -193,9 +193,9 @@ This avoids multiplying many small numbers, which quickly underflows to zero in 
 
 Shannon entropy measures the expected amount of surprise in a probability distribution.
 
-\[
+$$
 H(P) = -\sum P(x) \log P(x)
-\]
+$$
 
 A uniform distribution has high entropy — outcomes are maximally uncertain. A peaked distribution has low entropy — outcomes are predictable.
 
@@ -223,13 +223,13 @@ print(f"Entropy: {dist.entropy():.4f}")
 
 ### Cross-Entropy
 
-Cross-entropy measures the expected cost of encoding outcomes from distribution \(P\) using a code optimised for distribution \(Q\):
+Cross-entropy measures the expected cost of encoding outcomes from distribution $P$ using a code optimised for distribution $Q$:
 
-\[
+$$
 H(P, Q) = -\sum P(x) \log Q(x)
-\]
+$$
 
-When \(Q\) is the model's prediction and \(P\) is the true distribution (usually one-hot), this becomes the standard classification loss.
+When $Q$ is the model's prediction and $P$ is the true distribution (usually one-hot), this becomes the standard classification loss.
 
 ```python
 y_true = torch.tensor([0.0, 0.0, 1.0])            # true label: class 2
@@ -243,7 +243,7 @@ print(f"Good prediction CE: {cross_entropy(y_true, y_pred_good):.4f}")   # low
 print(f"Bad  prediction CE: {cross_entropy(y_true, y_pred_bad):.4f}")    # high
 ```
 
-Because the true label is one-hot, cross-entropy simplifies to \(-\log Q(\text{correct class})\) — exactly what `torch.nn.CrossEntropyLoss` computes.
+Because the true label is one-hot, cross-entropy simplifies to $-\log Q(\text{correct class})$ — exactly what `torch.nn.CrossEntropyLoss` computes.
 
 
 ### Cross-Entropy in PyTorch
@@ -267,13 +267,13 @@ print(f"Manual CE       : {manual_ce:.4f}")
 
 ### KL Divergence
 
-KL divergence measures how different distribution \(Q\) is from distribution \(P\):
+KL divergence measures how different distribution $Q$ is from distribution $P$:
 
-\[
+$$
 \text{KL}(P \| Q) = \sum P(x) \log \frac{P(x)}{Q(x)}
-\]
+$$
 
-It is always non-negative, zero if and only if \(P = Q\), and not symmetric.
+It is always non-negative, zero if and only if $P = Q$, and not symmetric.
 
 ```python
 def kl_divergence(p, q):
@@ -289,9 +289,9 @@ print(f"KL(P||P) = {kl_divergence(p, p):.4f}")   # 0.0
 
 The relationship to cross-entropy is:
 
-\[
+$$
 H(P, Q) = H(P) + \text{KL}(P \| Q)
-\]
+$$
 
 
 ### The Equivalence Chain
@@ -368,11 +368,11 @@ print(torch.log_softmax(logits, dim=0))   # same result
 
 `torch.logsumexp` is used internally in `CrossEntropyLoss`, which computes:
 
-\[
+$$
 \text{loss} = -\text{logits}[y] + \text{logsumexp}(\text{logits})
-\]
+$$
 
-rather than the naive \(-\log(\text{softmax}(\text{logits})[y])\).
+rather than the naive $-\log(\text{softmax}(\text{logits})[y])$.
 
 
 ### NaN Propagation
@@ -462,7 +462,7 @@ For each scenario, choose the appropriate output distribution and explain why:
 
 ### 3
 
-Verify numerically that \(H(P, Q) = H(P) + \text{KL}(P \| Q)\) for two arbitrary distributions.
+Verify numerically that $H(P, Q) = H(P) + \text{KL}(P \| Q)$ for two arbitrary distributions.
 
 ### 4
 
