@@ -213,6 +213,8 @@ certain = torch.tensor([1.0, 0.0, 0.0, 0.0])
 print(f"Entropy (certain): {entropy(certain):.4f}")   # 0.0
 ```
 
+`torch.where` acts as a safeguard against a fatal mathematical edge case: $\log(0) = -\infty$. A naive log calculation on a zero probability would result in a NaN crash. By using it, the code safely intercepts zeros and replaces them before the calculation happens. 
+ 
 `torch.distributions` provides entropy directly:
 
 ```python
