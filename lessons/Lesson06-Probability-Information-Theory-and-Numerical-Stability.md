@@ -213,8 +213,10 @@ certain = torch.tensor([1.0, 0.0, 0.0, 0.0])
 print(f"Entropy (certain): {entropy(certain):.4f}")   # 0.0
 ```
 
-`torch.where` acts as a safeguard against a fatal mathematical edge case: $\log(0) = -\infty$. A naive log calculation on a zero probability would result in a NaN crash. By using it, the code safely intercepts zeros and replaces them before the calculation happens. 
- 
+`torch.where` acts as a safeguard against a fatal mathematical edge case $\log(0) = -\infty$: it intercepts zeros and substitutes them before the log is computed.
+
+But the pattern is not safe under autograd — the backward pass can produce `NaN` gradients even when the forward output looks correct. This hazard is discussed in detail in the Numerical Stability section.
+
 `torch.distributions` provides entropy directly:
 
 ```python
@@ -400,6 +402,72 @@ check_finite(torch.tensor([1.0, float('nan')]), "x")
 PyTorch also provides `torch.autograd.set_detect_anomaly(True)` for detailed NaN gradient diagnostics.
 
 
+### `torch.where` Is Not Autograd-Safe
+
+The `torch.where` guard used in the Entropy section — `torch.where(probs > 0, torch.log(probs), torch.zeros_like(probs))` — looks safe because the forward pass correctly discards `-inf`. However, the backward pass can still produce `NaN` gradients. (Full details of forward and backward propagation are covered in later lessons; this is a brief heads-up.)
+
+#### Why the Backward Pass Breaks
+
+PyTorch's autograd engine records every operation into a **computational graph** during the forward pass so it can apply the chain rule in reverse:
+
+```
+        probs = 0.0
+           /       \
+     [torch.log]   [zeros_like]
+          |             |
+        -inf           0.0
+           \           /
+        [torch.where]   ← selects 0.0 for forward output
+              |
+            output
+```
+
+Notice that `torch.log` is still a node in that graph, even though `torch.where` discarded its output. When `.backward()` is called, autograd traverses the graph in reverse and differentiates every executed operation — including `torch.log`.
+
+The derivative of $\log(x)$ is $\frac{1}{x}$. At $x = 0$:
+
+$$
+\text{grad\_x} = \text{grad\_output} \times \frac{1}{0} = \text{NaN}
+$$
+
+Because `probs` feeds into *both* the condition and `torch.log`, its total gradient is the sum of gradients from all paths:
+
+$$
+\text{grad\_probs} = \underbrace{0.0}_{\text{from where (discarded)}} + \underbrace{\text{NaN}}_{\text{from log}} = \text{NaN}
+$$
+
+In IEEE floating-point, anything plus `NaN` is `NaN`. The poisoned gradient silently corrupts `probs.grad` and propagates upstream.
+
+#### Proof
+
+```python
+probs = torch.tensor([0.5, 0.0], requires_grad=True)
+
+# Forward pass
+log_probs = torch.where(probs > 0, torch.log(probs), torch.zeros_like(probs))
+loss = log_probs.sum()
+
+print("Forward output:", log_probs.detach())
+# tensor([-0.6931,  0.0000])  — looks clean
+
+# Backward pass
+loss.backward()
+print("Gradients:", probs.grad)
+# tensor([2.0000, nan])  — NaN leaked!
+```
+
+#### The Fix: Clamp Before Log
+
+Prevent `probs` from ever reaching absolute zero inside `log`:
+
+```python
+# Safe both forward and backward
+log_probs = torch.log(torch.clamp(probs, min=1e-12))
+```
+
+With `clamp`, `torch.log` never sees a true zero. The forward value is a large-but-finite negative number, and the gradient is a large-but-finite value — no `NaN`, no silent corruption.
+
+
 ## Companion Insight
 
 There is a single principle connecting everything in this lesson:
@@ -411,7 +479,8 @@ This is why:
 - distributions expose `log_prob()` rather than `prob()` — stay in log space;
 - `CrossEntropyLoss` uses `log_softmax` internally rather than `softmax` followed by `log`;
 - stable softmax subtracts the maximum before exponentiating;
-- `torch.logsumexp` exists as a separate primitive.
+- `torch.logsumexp` exists as a separate primitive;
+- `torch.clamp` prevents `log(0)` from producing `-inf` in the forward pass and `NaN` in the backward pass.
 
 Each of these is the same numerical stability technique, applied at a different layer of the stack.
 
@@ -486,7 +555,7 @@ Probability, information theory, and numerical computation form a single narrati
 - **Probability** provides the language — distributions, log-probabilities, sampling.
 - **Distribution choice** determines the loss function — MSE implies Gaussian, cross-entropy implies Categorical.
 - **Information theory** justifies the loss — cross-entropy equals maximum likelihood equals KL divergence minimisation.
-- **Numerical stability** makes the loss computable — log space, stable softmax, logsumexp.
+- **Numerical stability** makes the loss computable — log space, stable softmax, logsumexp, and safe gradient patterns like clamping.
 
 The central engineering insight is that all numerical stability techniques in deep learning are manifestations of the same principle: stay in log space and avoid extreme intermediate values.
 
