@@ -424,16 +424,16 @@ PyTorch's autograd engine records every operation into a **computational graph**
 
 Notice that `torch.log` is still a node in that graph, even though `torch.where` discarded its output. When `.backward()` is called, autograd traverses the graph in reverse and differentiates every executed operation — including `torch.log`.
 
-The derivative of $\log(x)$ is $\frac{1}{x}$. At $x = 0$:
+The derivative of $\log(x)$ is $\frac{1}{x}$. At $x = 0$, the backward formula for `torch.log` evaluates to:
 
 $$
-\text{grad\_x} = \text{grad\_output} \times \frac{1}{0} = \text{NaN}
+\frac{\partial L}{\partial x} = \text{upstream gradient} \times \frac{1}{0} = \text{NaN}
 $$
 
 Because `probs` feeds into *both* the condition and `torch.log`, its total gradient is the sum of gradients from all paths:
 
 $$
-\text{grad\_probs} = \underbrace{0.0}_{\text{from where (discarded)}} + \underbrace{\text{NaN}}_{\text{from log}} = \text{NaN}
+\frac{\partial L}{\partial\, \text{probs}} = \underbrace{0.0}_{\text{from where}} + \underbrace{\text{NaN}}_{\text{from log}} = \text{NaN}
 $$
 
 In IEEE floating-point, anything plus `NaN` is `NaN`. The poisoned gradient silently corrupts `probs.grad` and propagates upstream.
