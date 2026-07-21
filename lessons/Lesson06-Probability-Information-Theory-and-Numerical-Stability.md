@@ -355,7 +355,45 @@ Subtracting a constant does not change the softmax value mathematically — it c
 
 ### Log-Sum-Exp
 
-The pattern above is so common that PyTorch provides it as a primitive:
+`CrossEntropyLoss` does not compute $-\log(\text{softmax}(x)_y)$ directly. Instead, it uses an equivalent but numerically safer form:
+
+$$
+\text{Loss} = -x_y + \log\left(\sum_j e^{x_j}\right)
+$$
+
+Here is the derivation from ordinary cross-entropy. Start with:
+
+$$
+\text{Loss} = -\log\left(\text{softmax}(x)_y\right)
+$$
+
+Substitute $\text{softmax}(x)_y = \frac{e^{x_y}}{\sum_j e^{x_j}}$ into the log:
+
+$$
+\text{Loss} = -\log\left( \frac{e^{x_y}}{\sum_j e^{x_j}} \right)
+$$
+
+Using $\log\frac{a}{b} = \log a - \log b$, split the fraction:
+
+$$
+\text{Loss} = -\left( \log(e^{x_y}) - \log\left(\sum_j e^{x_j}\right) \right)
+$$
+
+Distribute the minus sign:
+
+$$
+\text{Loss} = -\log(e^{x_y}) + \log\left(\sum_j e^{x_j}\right)
+$$
+
+Finally, cancel $\log$ and $e$ (since $\log(e^z) = z$):
+
+$$
+\text{Loss} = -x_y + \underbrace{\log\left(\sum_j e^{x_j}\right)}_{\text{logsumexp}(x)}
+$$
+
+So `CrossEntropyLoss` only needs the raw target score $-x_y$ and the term $\log\left(\sum_j e^{x_j}\right)$. It never materialises the intermediate probabilities, avoiding the expensive and unstable sequence `exp → sum → divide → log`.
+
+This pattern is so common that PyTorch provides it as a primitive:
 
 ```python
 logits = torch.tensor([1000.0, 1001.0, 1002.0])
@@ -369,14 +407,6 @@ log_sm = logits - torch.logsumexp(logits, dim=0)
 print(log_sm)
 print(torch.log_softmax(logits, dim=0))   # same result
 ```
-
-`torch.logsumexp` is used internally in `CrossEntropyLoss`, which computes:
-
-$$
-\text{loss} = -\text{logits}[y] + \text{logsumexp}(\text{logits})
-$$
-
-rather than the naive $-\log(\text{softmax}(\text{logits})[y])$.
 
 
 ### NaN Propagation
