@@ -438,7 +438,7 @@ $$
 
 In IEEE floating-point, anything plus `NaN` is `NaN`. The poisoned gradient silently corrupts `probs.grad` and propagates upstream.
 
-#### Proof
+You can quickly draw an experimental code to reproduce the breakage:
 
 ```python
 probs = torch.tensor([0.5, 0.0], requires_grad=True)
