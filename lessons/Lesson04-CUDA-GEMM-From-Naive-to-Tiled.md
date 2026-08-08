@@ -261,16 +261,6 @@ Neighboring threads often fetch the same values independently.
 
 This redundant memory traffic is the primary bottleneck.
 
-## Fun Fact
-
-You may also notice that the kernel accumulates the result in a local variable `sum` instead of updating `C[row * n + col]` inside the loop.
-
-It is intentional.
-
-Unlike CPU programming, CUDA programming requires careful consideration of **where** data resides. The output matrix C is stored in **global memory**, accesses to it have much higher latency than accesses to registers. A local variable such as sum is typically allocated to a **register**, allowing the accumulation to proceed using the fastest storage available. After the entire dot product has been computed, the final result is written to global memory exactly once.
-
-Although this optimization may seem unfamiliar at first, it is one of the fundamental principles of GPU programming: perform as much computation as possible in registers, and minimize accesses to global memory. As you progress through this chapter, this pattern will appear repeatedly and gradually become second nature.
-
 ## Shared Memory
 
 The fix is **shared memory**: a fast, on-chip scratchpad shared by all threads in the same thread block.
@@ -397,6 +387,17 @@ The first `__syncthreads()` ensures that all threads have finished loading into 
 The second `__syncthreads()` ensures that all threads have finished reading shared memory before the next tile overwrites it.
 
 Removing either barrier introduces race conditions.
+
+
+## Fun Fact
+
+You may also notice that the kernel accumulates the result in a local variable `sum` instead of updating `C[row * n + col]` inside the loop.
+
+It is intentional.
+
+Unlike CPU programming, CUDA programming requires careful consideration of **where** data resides. The output matrix C is stored in **global memory**, accesses to it have much higher latency than accesses to registers. A local variable such as sum is typically allocated to a **register**, allowing the accumulation to proceed using the fastest storage available. After the entire dot product has been computed, the final result is written to global memory exactly once.
+
+Although this optimization may seem unfamiliar at first, it is one of the fundamental principles of GPU programming: perform as much computation as possible in registers, and minimize accesses to global memory. As you progress through this chapter, this pattern will appear repeatedly and gradually become second nature.
 
 
 ## Companion Insight
