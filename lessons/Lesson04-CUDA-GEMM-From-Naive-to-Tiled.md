@@ -412,7 +412,7 @@ This matters in tiled GEMM because the whole point of shared memory is to make r
 
 A common fix when a tile layout does cause conflicts is **padding**: add one extra column to the shared-memory tile, for example `float tileA[TILE][TILE + 1]`. That small shift changes the bank mapping and often removes the repeated `gcd(32, S)` conflict pattern.
 
-
+N.B. The discussion about bank conflicts is within **a single warp**. If two different warps access the same bank, those accesses are handled independently by the SM scheduler; the conflict model we discuss here is the intra-warp pattern that can serialize a single instruction's shared-memory access.
 
 ## Fun Fact
 
