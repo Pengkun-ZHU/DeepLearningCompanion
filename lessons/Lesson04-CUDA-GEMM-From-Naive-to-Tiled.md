@@ -389,6 +389,31 @@ The second `__syncthreads()` ensures that all threads have finished reading shar
 Removing either barrier introduces race conditions.
 
 
+## Bank Conflicts
+
+Shared memory is fast, but it is still structured hardware. On most modern NVIDIA GPUs, shared memory is divided into 32 banks, and a warp is most efficient when its threads access different banks.
+
+If the threads in a warp access 32-bit words with stride $S$ in shared memory, then the accesses spread across only
+
+$$
+\frac{32}{\gcd(32, S)}
+$$
+
+distinct banks. Equivalently, the access pattern produces a $\gcd(32, S)$-way bank conflict.
+
+For example:
+
+- $S = 1$ means no conflict: each thread hits a different bank.
+- $S = 2$ means a 2-way conflict.
+- $S = 16$ means a 16-way conflict.
+- $S = 32$ means all threads contend for the same bank.
+
+This matters in tiled GEMM because the whole point of shared memory is to make reuse cheap. A poor tile layout can reintroduce serialization even after you have moved data off global memory. The kernel above stores tiles in row-major form, which lets threads in a warp read contiguous shared-memory locations during the inner accumulation step and avoids the worst conflict patterns.
+
+A common fix when a tile layout does cause conflicts is **padding**: add one extra column to the shared-memory tile, for example `float tileA[TILE][TILE + 1]`. That small shift changes the bank mapping and often removes the repeated `gcd(32, S)` conflict pattern.
+
+
+
 ## Fun Fact
 
 You may also notice that the kernel accumulates the result in a local variable `sum` instead of updating `C[row * n + col]` inside the loop.
@@ -406,7 +431,7 @@ Tiling is a memory hierarchy optimization — specifically, a strategy for worki
 
 The key idea is:
 
-> Shared memory is fast but small and block-private. Since the full matrix cannot fit, we partition it into tiles, load each tile cooperatively, reuse it, and then replace it. This turns a capacity constraint into a streaming pattern.
+Shared memory is fast but small and block-private. Since the full matrix cannot fit, we partition it into tiles, load each tile cooperatively, reuse it, and then replace it. This turns a capacity constraint into a streaming pattern.
 
 This is sometimes confused with a parallelization technique, but it is not:
 
