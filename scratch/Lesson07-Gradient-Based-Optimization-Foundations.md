@@ -115,6 +115,85 @@ optimizer.step()        # update parameters
 is the standard PyTorch training loop.
 
 
+## Constrained Optimization and KKT Multipliers
+
+The optimizer API above solves an unconstrained problem.
+
+For a constrained problem, the general template is:
+
+$$
+\min_x \; f(x) \quad \text{subject to} \quad g_i(x) \le 0,\; h_j(x) = 0
+$$
+
+and the corresponding Lagrangian saddle-point form is
+
+$$
+\min_x \max_{\lambda \ge 0,\; \nu} \; f(x) + \lambda^\top g(x) + \nu^\top h(x)
+$$
+
+This is the compact KKT picture: we minimize over the primal variable $x$ and maximize over the multipliers for the constraints. If you like the shorthand, this is the general form
+
+$$
+\min_x \max_a \max_g \; \mathcal{L}(x, a, g)
+$$
+
+where $a$ represents the nonnegative multipliers for inequality constraints and $g$ denotes the constraint terms. A simple concrete example is:
+
+$$
+\min_x \; (x + 2)^2 \quad \text{subject to} \quad x \ge -1
+$$
+
+The unconstrained minimum is at $x = -2$, but that point is not feasible. So the constrained optimum sits on the boundary at $x = -1$.
+
+Write the constraint as $g(x) = -x - 1 \le 0$. The Lagrangian is
+
+$$
+\mathcal{L}(x, \lambda) = (x + 2)^2 + \lambda(-x - 1)
+$$
+
+with $\lambda \ge 0$. The KKT conditions are:
+
+- **stationarity**: $\frac{\partial \mathcal{L}}{\partial x} = 0$;
+- **primal feasibility**: $x \ge -1$;
+- **dual feasibility**: $\lambda \ge 0$;
+- **complementary slackness**: $\lambda(x + 1) = 0$.
+
+For this example, the solution is $x = -1$ and $\lambda = 2$.
+
+```python
+import torch
+
+x = torch.tensor(5.0, requires_grad=True)
+lam = torch.tensor(0.0, requires_grad=True)
+
+for step in range(50):
+    lagrangian = (x + 2) ** 2 + lam * (-x - 1)
+    grad_x, grad_lam = torch.autograd.grad(lagrangian, (x, lam))
+
+    # Primal descent on x.
+    x = (x - 0.1 * grad_x).detach().requires_grad_()
+
+    # Dual ascent on lambda, projected to lambda >= 0.
+    lam = (lam + 0.1 * grad_lam).clamp(min=0.0).detach().requires_grad_()
+
+    if step % 10 == 0:
+        print(f"step={step:2d}: x={x.item():.4f}, lambda={lam.item():.4f}")
+
+print(f"final x = {x.item():.4f}")
+print(f"final lambda = {lam.item():.4f}")
+```
+
+This is a tiny primal-dual solver.
+
+PyTorch does not hide the KKT machinery for you here. In practice, constrained optimization is usually handled by:
+
+- reparameterization, so the constraint is always satisfied;
+- projection, where you clip or project parameters after each step;
+- penalties or Lagrangians, when you want to enforce the constraint approximately.
+
+The KKT view is useful because it tells you what the exact constrained optimum must satisfy.
+
+
 ## Investigation 2 — Learning Rate Sensitivity
 
 The learning rate controls the step size.
