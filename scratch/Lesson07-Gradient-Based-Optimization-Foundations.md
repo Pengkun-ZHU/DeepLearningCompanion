@@ -122,25 +122,25 @@ The optimizer API above solves an unconstrained problem.
 For a constrained problem, the general template is:
 
 $$
-\min_x \; f(x) \quad \text{subject to} \quad g_i(x) \le 0,\; h_j(x) = 0
+\min_x  f(x) \quad \text{subject to} \quad g_i(x) \le 0, h_j(x) = 0
 $$
 
 and the corresponding Lagrangian saddle-point form is
 
 $$
-\min_x \max_{\lambda \ge 0,\; \nu} \; f(x) + \lambda^\top g(x) + \nu^\top h(x)
+\min_x \max_{\lambda \ge 0, \nu}  f(x) + \lambda^\top g(x) + \nu^\top h(x)
 $$
 
 This is the compact KKT picture: we minimize over the primal variable $x$ and maximize over the multipliers for the constraints. If you like the shorthand, this is the general form
 
 $$
-\min_x \max_a \max_g \; \mathcal{L}(x, a, g)
+\min_x \max_a \max_g  \mathcal{L}(x, a, g)
 $$
 
 where $a$ represents the nonnegative multipliers for inequality constraints and $g$ denotes the constraint terms. A simple concrete example is:
 
 $$
-\min_x \; (x + 2)^2 \quad \text{subject to} \quad x \ge -1
+\min_x  (x + 2)^2 \quad \text{subject to} \quad x \ge -1
 $$
 
 The unconstrained minimum is at $x = -2$, but that point is not feasible. So the constrained optimum sits on the boundary at $x = -1$.
