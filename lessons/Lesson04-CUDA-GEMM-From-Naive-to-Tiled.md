@@ -322,8 +322,6 @@ For each tile along the shared dimension `k`:
 4. Each thread accumulates its partial dot product using shared memory values.
 5. Repeat for the next tile.
 
-Notice the pattern: **load → sync → compute → sync → replace**. The tile is the unit of data movement, not the unit of parallelism. Once this distinction becomes clear, it is also easier to see that neither the tile nor the matrix is required to be square.
-
 > **Key insight (don't miss this):** Tiling changes *how data is loaded*, not *who owns the output*.
 > In this lesson's tiled kernel, each thread still computes **one element** of `C` — same as the naïve kernel.
 > What changes is that **one thread block owns one output tile** of `C` (here, 16×16), because shared memory is shared only within a block.
