@@ -1,4 +1,4 @@
-# Lesson 04 — CUDA GEMM: From Naïve to Tiled
+# Lesson 04 — CUDA shared memory and GEMM: From Naïve to Tiled
 
 |Book|Chapter|Section|
 |---|---|---|
