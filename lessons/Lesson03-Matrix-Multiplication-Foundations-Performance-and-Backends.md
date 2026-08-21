@@ -373,6 +373,7 @@ for (int i = 0; i < M; ++i)
 
 On large matrices, this difference can dramatically affect performance.
 
+Neither A nor B is the villain — the inner loop is. Row-major punishes B in (i,j,k); column-major would punish A instead.
 
 ## Blocking (Tiling)
 
