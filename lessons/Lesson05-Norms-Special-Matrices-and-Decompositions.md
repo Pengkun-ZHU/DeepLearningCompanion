@@ -103,7 +103,7 @@ x = torch.randn(3)
 print(d * x)
 ```
 
-The drastic performance difffernce comes from two sources: the Hadamard path avoids allocating the $N \times N$ matrix entirely, and it reduces the computation from $O(N^2)$ to $O(N)$. Whenever a diagonal matrix appears in a derivation, it is worth checking whether the full matrix can be replaced by its 1-D vector of diagonal entries.
+The drastic performance difference comes from two sources: the Hadamard path avoids allocating the $N \times N$ matrix entirely, and it reduces the computation from $O(N^2)$ to $O(N)$. Whenever a diagonal matrix appears in a derivation, it is worth checking whether the full matrix can be replaced by its 1-D vector of diagonal entries.
 
 ### Symmetric matrices
 

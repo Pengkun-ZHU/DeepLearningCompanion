@@ -71,9 +71,6 @@ roadmap.md
 lessons/
     Companion lessons following the Deep Learning book.
 
-minitorch/
-    A minimal deep learning framework implemented incrementally.
-
 ```
 
 

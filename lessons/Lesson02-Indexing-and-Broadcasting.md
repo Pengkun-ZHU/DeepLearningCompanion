@@ -405,6 +405,13 @@ x = x.t()
 Notice that only the stride changes. The indexing algorithm remains identical.
 
 
+### 3
+
+Compute the storage offset for `x[2, 3]`, `x[1, 0]`, and `x[0, 2]` in an `x = torch.arange(12).reshape(3, 4)` tensor **by hand**, using only the stride and the address formula from Part 1.
+
+Then repeat the exercise after `x = x.t()`. Notice that only the stride changes — the indexing formula itself is identical.
+
+
 ### 4
 
 Predict whether each pair of shapes can be broadcast.
