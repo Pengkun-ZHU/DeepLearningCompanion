@@ -405,6 +405,17 @@ x = x.t()
 Notice that only the stride changes. The indexing algorithm remains identical.
 
 
+### 3
+
+Using the address formula
+
+$$
+\text{offset} = \text{storage offset} + \sum_{d=0}^{n-1} \text{index}[d] \times \text{stride}[d]
+$$
+
+compute the storage offset for `x[1, 2, 3]` where `x = torch.arange(24).reshape(2, 3, 4)`. Do this by hand, then verify your answer in Python.
+
+
 ### 4
 
 Predict whether each pair of shapes can be broadcast.

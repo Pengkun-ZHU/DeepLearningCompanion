@@ -1,4 +1,4 @@
-# Lesson 13 — Gradient-Based Optimization Foundations
+# Lesson 07 — Gradient-Based Optimization Foundations
 
 | | |
 |---|---|
@@ -311,7 +311,7 @@ The difficulty is entirely in:
 
 Modern deep learning adds **momentum**, **adaptive learning rates**, and **learning rate schedules** on top of the basic gradient descent rule.
 
-We'll study these in Lesson 23 when we cover stochastic gradient descent in detail.
+We'll study these in a later lesson when we cover stochastic gradient descent in detail.
 
 
 ## Source Reading
@@ -403,7 +403,7 @@ The challenges in practice are not the algorithm but the properties of the loss 
 
 ## Next Lesson
 
-**Lesson 14 — Computational Graphs and Autograd**
+**Lesson 08 — Computational Graphs and Autograd**
 
 The previous lessons assumed that gradients were available.
 

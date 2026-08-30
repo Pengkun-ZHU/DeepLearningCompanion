@@ -134,7 +134,7 @@ void naive_gemm(const float* A,
     float sum = 0.0f;
 
     for (int kk = 0; kk < k; ++kk)
-        sum += A[row * kk + kk] * B[kk * n + col];
+        sum += A[row * k + kk] * B[kk * n + col];
 
     C[row * n + col] = sum;
 }
