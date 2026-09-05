@@ -450,45 +450,6 @@ The same principle appears throughout high-performance computing:
 Understanding tiled GEMM reveals why matrix multiplication on modern hardware is not just mathematically intensive but also carefully engineered to match the memory hierarchy.
 
 
-## Tensor Parallelism: A Multi-GPU View of Tiling
-
-A useful mental model is that tensor parallelism (TP) is the multi-GPU analogue of tiling.
-
-In tiled GEMM, one GPU breaks a large matrix multiply into smaller tiles so the same values can be reused from fast memory. In TP, the same idea is applied across devices: different GPUs each compute part of the large matmul, and their results are then combined.
-
-In practice, TP is most often used for large model weights, especially in inference, where a single weight matrix may not fit on one GPU. A common pattern is to split a linear layer's weight matrix across devices and compute the outputs in parallel. The partial results are then either summed or concatenated depending on how the matrix is partitioned.
-
-The key difference is that TP also requires communication:
-
-- if the matrix is split by rows, each GPU produces a partial result for the same output, and the partial results are summed with `all-reduce`;
-- if the matrix is split by columns, each GPU produces a different chunk of the final output, and the chunks are assembled with `all-gather`.
-
-So TP is not a different mathematical idea from tiling; it is the same decomposition pattern applied at a larger scale, but with inter-GPU communication added. Tiling optimizes memory locality inside one GPU; TP distributes the work across GPUs and then combines the partial results.
-
-A minimal PyTorch illustration is:
-
-```python
-import torch
-
-x = torch.randn(4, 8)
-W = torch.randn(8, 6)
-
-# Split W by rows across two devices
-W1 = W[:4, :]
-W2 = W[4:, :]
-
-# Each shard computes a partial output
-# The final output is the sum of the two partial outputs.
-y1 = x @ W1
-y2 = x @ W2
-
-y = y1 + y2
-print(torch.allclose(y, x @ W))
-```
-
-This is the same idea as TP in a simplified form: break a large weight matrix into pieces, compute them separately, then combine the results.
-
-
 ## Source Reading
 
 Read the CUDA Programming Guide sections describing:
