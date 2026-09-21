@@ -128,7 +128,16 @@ loss.backward()
 optimizer.step()
 ```
 
-This is the same update rule expressed through a library abstraction.
+This is the same update rule expressed through a library abstraction. In the manual loop, the equivalent step was:
+
+```python
+with torch.no_grad():
+    x -= learning_rate * x.grad
+```
+
+The optimizer does this internally for each `step()`: it reads the gradient, applies the parameter update, and keeps any optimizer state needed for methods such as momentum.
+
+The important detail is that the update itself is not part of the training loss graph. We use `torch.no_grad()` so PyTorch does not record the optimization step as part of the compute graph. The graph is for computing gradients of the loss; the optimizer update is a separate control step. We will revisit this idea in the next chapter.
 
 
 ## Investigation 2 — Learning Rate Sensitivity
@@ -277,10 +286,10 @@ The optimizer repeatedly does the following:
 
 1. zero the accumulated gradients;
 2. compute predictions and loss;
-3. propagate gradients backward through the graph;
+3. backpropagate to get gradients;
 4. update parameters in the direction opposite the gradient.
 
-This simple cycle is the basis of nearly all neural network training.
+The update is performed under `torch.no_grad()`, which means we are not recording the optimizer step itself in the compute graph. The graph is for differentiating the loss; the optimizer step is a separate update rule. We will discuss the compute graph in more detail in the next chapter.
 
 
 ## Source Reading
